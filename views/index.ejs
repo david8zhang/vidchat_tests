@@ -3,47 +3,27 @@
 	<head>
 	</head>
 	<body>
-		<hr /><button id="openRoom">Open Room</button>
-      	<button id="joinRoom">Join Room</button><hr />
-		<script src="/rtcmulticonnection/RTCMultiConnection.js"></script>
-		<script src="/index.js"></script>
+		<!-- Video elements -->
+		<div class="container">
+			<div id='videos'>
+				<video id='localVideo' autoplay></video>
+				<div id="remoteVideos"></div>
+			</div>	
+		</div>
+		<script src="/latest.js"></script>
 		<script>
-			//Video preferences for Moderator, constants defining room/channel/user id
-			var MODERATOR_CHANNEL_ID = 'ABCDEF'; // channel-id
-			var MODERATOR_SESSION_ID = 'XYZ';    // room-id
-			var MODERATOR_ID         = 'JKL';    // user-id
-			var MODERATOR_SESSION    = {         // media-type
-			    audio: true,
-			    video: true
-			};
-			var MODERATOR_EXTRA      = {};       // empty extra-data
+			var webrtc = new SimpleWebRTC({
+				localVideoEl: 'localVideo',
+				remoteVideosEl:'remoteVideos',
+				autoRequestMedia:true
+			})
 
-			//Code for the room moderator (in this case, the teacher)
-			var moderator     = new RTCMultiConnection(MODERATOR_CHANNEL_ID);
-			moderator.session = MODERATOR_SESSION;
-			moderator.userid  = MODERATOR_ID;
-			moderator.extra   = MODERATOR_EXTRA;
-			moderator.open({ 
-			    dontTransmit: false,
-			    sessionid   : MODERATOR_SESSION_ID
+
+			webrtc.on('readyToCall', function () {
+				webrtc.joinRoom("11234");
 			});
 
-			//Code for participants
-			var participants = new RTCMultiConnection(MODERATOR_CHANNEL_ID);
-			participants.join({
-			    sessionid: MODERATOR_SESSION_ID,
-			    userid   : MODERATOR_ID,
-			    extra    : MODERATOR_EXTRA,
-			    session  : MODERATOR_SESSION
-			});
+		</script>
 
-			document.getElementById('openRoom').onClick = function(){
-				(new RTCMultiConnection).open();
-			}
-			document.getElementById('joinRoom').onClick = function(){
-				(new RTCMultiConnection).connect();
-			}
-
-			</script>
 	</body>	
 </html>
